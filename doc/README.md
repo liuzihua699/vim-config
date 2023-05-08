@@ -1,76 +1,79 @@
 # lunarvim
 ## quick install
-note: preinstall please check you network.
+注意：安装前检查网络，尽量使用科学上网
 
 ```
 bash <(curl -s https://raw.githubusercontent.com/lunarvim   /lunarvim/master/utils/installer/install.sh)
 ```
 
 ## person keymap
-first, you need to use the `leader` key to weak which-key.
+首先，你需要尽量多的使用`leader`键去唤起which-key。
 
-I list some important keymap:
+我列举了一些我认为比较重要的keymap：
 
-about help:
+全局帮助相关：
 keymap | note
 ---|---
-leader+LK | view lvim keymappings
-leader+sC | search lvim command
-leader+sk | search lvim key map
+leader+LK | 查看lvim所有当前可用的keymap
+leader+sC | 搜索lvim所有当前可用命令
+leader+sk | 搜索lvim所有当前可用keymap
 
 
-about plug:
+插件相关：
 keymap | note
 ---|---
-leader+e | popup nvim-tree
-leader+f | find file 
-leader+; | jump to dashboard
-`<C-4>` or `<C-\>` | popup terminal windows
+leader+e | 弹出nvim-tree目录树
+leader+f | 当前目录搜索文件
+leader+; | 打开dashboard页面
+`<C-4>` or `<C-\>` | 弹出terminal窗口
+leader+uc | 切换nvim-tree为当前文件所在目录
+(noremal mode)E or R | 向前或向后快速跳转字符
+ysiw' | 选中当前指针的字在两边插入符号
+(noremal mod)% | 跳转到下一个匹配的符号
 
-
-about lsp:
+lsp相关：
 keymap | note
 ---|---
-S | show documention hover current point
-gd | jump to definition
-gr | jump to references
-gI | jump to implemention
+S | 显示当前指针下字符的帮助信息
+gd | 跳转到当前指针的定义项
+gr | 跳转到当前指针的引用项
+gI | 跳转到当前指针的实现项
 
 
-about IDE:
+IDE相关：
 keymap | note
 ---|---
-leader+/ | comment line 
-gb | comment block
-`<M-j>` | move down current line
-`<M-K>` | move up current line
-`<C-space>` |  popup code lsp
+leader+/ | 注释一行
+gb | 以块的方式注释
+`<M-j>` | 当前行向下移动
+`<M-K>` | 当前行向上移动
+`<C-space>` |  插入模式下弹出候选词组
 
 
-about windows:
+窗口相关：
 keymap | note
 ---|---
-`<C-w>` | switch windows focus
-`<C-h>` | focus to left
-`<C-l>` | focus to right
-`<C-j>` | focus to down
-`<C-k>` | focus to up
+`<C-w>` | 切换窗口焦点
+`<C-h>` | 左边的窗口获取焦点
+`<C-l>` | 右边的窗口获取焦点
+`<C-j>` | 下面的窗口获取焦点
+`<C-k>` | 上面的窗口获取焦点
 
 
 ## nerd font support
-download nerd font:
+下载nerd font：
 ```shell
 mkdir -p ~/.local/share/fonts
 cd ~/.local/share/fonts
 curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
 ```
 
-then flush font:
+然后刷新字体：
 ```shell
 fc-cache -f -v .
 ```
 
-finally, select the nerd font on your terminal.
+最后，翻阅你的terminal设置选项，配置nerd字体为控制台字体
 
 
 

@@ -18,3 +18,4 @@ mv ~/.config/lvim/config.lua ~/.config/lvim/config.lua.old
 cp config.lua ~/.config/lvim/config.lua
 lvim
 ```
+
