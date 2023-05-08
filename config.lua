@@ -19,6 +19,7 @@ lvim.format_on_save = {
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 lvim.leader = ","
+
 -- add your own keymapping
 lvim.lsp.buffer_mappings.normal_mode["K"] = nil
 lvim.lsp.buffer_mappings.normal_mode["S"] = { vim.lsp.buf.hover, "Show documentation" }
@@ -33,32 +34,23 @@ lvim.keys.normal_mode["L"] = "$"
 lvim.keys.visual_mode["J"] = "5j"
 lvim.keys.visual_mode["K"] = "5k"
 
-
--- lvim.builtin.lualine.options.theme = "gruvbox"
--- lvim.plugins = {
---     {
---         "simrat39/symbols-outline.nvim",
---         cmd = "SymbolsOutline",
---     },
--- }
+-- global varibale definition
+local keymap = lvim.builtin.which_key.mappings
+local vkeymap = lvim.builtin.which_key.vmappings
 
 
 -- -- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
-lvim.builtin.which_key.mappings["u"] = {
-    name = "+User keymap",
-    c = { "<cmd>cd %:p:h<CR>:pwd<CR>", "change current file directory." }
+keymap["u"] = {
+    name = "+Use keymap",
+    c = { "<cmd>cd %:p:h<CR>:pwd<CR>", "change current file directory" }
 }
--- lvim.builtin.which_key.mappings.l = vim.tbl_extend("keep", lvim.builtin.which_key.mappings.l, {
---     o = { "<cmd>SymbolsOutline<cr>", "Open Outline" }
--- })
 
-
+-- disable whichkey
+keymap["T"] = nil
+keymap["w"] = nil
+keymap["q"] = nil
 
 -- -- Change theme settings
--- lvim.colorscheme = "lunar"
-
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
@@ -68,70 +60,303 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
 
--- lvim.builtin.treesitter.ignore_install = { "haskell" }
-
--- -- always installed on startup, useful for parsers without a strict filetype
--- lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "regex" }
-
--- -- generic LSP settings <https://www.lunarvim.org/docs/languages#lsp-support>
-
 -- --- disable automatic installation of servers
 -- lvim.lsp.installer.setup.automatic_installation = false
 
--- ---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
--- ---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
--- local opts = {} -- check the lspconfig documentation for a list of all possible options
--- require("lvim.lsp.manager").setup("pyright", opts)
 
--- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. IMPORTANT: Requires `:LvimCacheReset` to take effect
--- ---`:LvimInfo` lists which server(s) are skipped for the current filetype
--- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
---   return server ~= "emmet_ls"
--- end, lvim.lsp.automatic_configuration.skipped_servers)
+-- lvim extension plugins configure
+lvim.plugins = {
+    {
+        -- note: cursor quick jump
+        "ggandor/leap.nvim",
+        lazy = true,
+        keys = { "E", "R", "W", "dE", "dR", "yE", "yR", "cE", "cR" },
+        config = function()
+            require("leap").opts.highlight_unlabeled_phase_one_kargets = true
+            -- leap.add_default_mappings()
+            vim.keymap.set({ "x", "o", "n" }, "E", "<Plug>(leap-forward-to)")
+            vim.keymap.set({ "x", "o", "n" }, "R", "<Plug>(leap-backward-to)")
+            vim.keymap.set({ "x", "o", "n" }, "W", "<Plug>(leap-from-window)")
+        end,
+    },
+    {
+        -- note: fixed method head
+        "romgrk/nvim-treesitter-context",
+        lazy = true,
+        event = { "User FileOpened" },
+        config = function()
+            require("treesitter-context").setup({
+                enable = true,
+                throttle = true,
+                max_lines = 0,
+                patterns = {
+                    default = {
+                        "class",
+                        "function",
+                        "method",
+                    },
+                },
+            })
+        end,
+    },
+    {
+        -- note: record the last open location of the file, limited to the current session only
+        "ethanholz/nvim-lastplace",
+        lazy = true,
+        event = { "User FileOpened" },
+        config = function()
+            require("nvim-lastplace").setup({
+                lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
+                lastplace_ignore_filetype = {
+                    "gitcommit",
+                    "gitrebase",
+                    "svn",
+                    "hgcommit",
+                },
+                lastplace_open_folds = true,
+            })
+        end,
+    },
+    {
+        -- note: quick append pairs, you can ysiw"
+        "kylechui/nvim-surround",
+        lazy = true,
+        keys = { "cs", "ds", "ys" },
+        config = function()
+            require("nvim-surround").setup({})
+        end,
+    },
+    {
+        -- note: quickfix preview and other functions
+        "kevinhwang91/nvim-bqf",
+        lazy = true,
+        ft = "qf",
+        config = function()
+            require("bqf").setup({
+                auto_enable = true,
+                auto_resize_height = true,
+                preview = {
+                    win_height = 12,
+                    win_vheight = 12,
+                    delay_syntax = 80,
+                    border_chars = { "┃", "┃", "━", "━", "┏", "┓", "┗", "┛", "█" },
+                    should_preview_cb = function(bufnr, qwinid)
+                        local ret = true
+                        local bufname = vim.api.nvim_buf_get_name(bufnr)
+                        local fsize = vim.fn.getfsize(bufname)
+                        if fsize > 100 * 1024 then
+                            -- skip file size greater than 100k
+                            ret = false
+                        elseif bufname:match("^fugitive://") then
+                            -- skip fugitive buffer
+                            ret = false
+                        end
+                        return ret
+                    end,
+                },
+                func_map = {
+                    drop = "o",
+                    openc = "O",
+                    split = "<C-s>",
+                    tabdrop = "<C-t>",
+                    tabc = "",
+                    vsplit = "<C-v>",
+                    ptogglemode = "z,",
+                    stoggleup = "",
+                },
+                filter = {
+                    fzf = {
+                        action_for = { ["ctrl-s"] = "split",["ctrl-t"] = "tab drop" },
+                        extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
+                    },
+                },
+            })
+        end,
+    },
+    {
+        -- note: Highlight, jump between pairs like if..else
+        "andymass/vim-matchup",
+        lazy = true,
+        event = { "User FileOpened" },
+        config = function()
+            vim.g.matchup_matchparen_offscreen = { method = "popup" }
+            lvim.builtin.treesitter.matchup.enable = true
+        end,
+    },
+    {
+        -- note: Restore last session of current dir
+        "folke/persistence.nvim",
+        lazy = true,
+        event = "BufReadPre", -- this will only start session saving when an actual file was opened
+        config = function()
+            require("persistence").setup({
+                dir = vim.fn.expand(vim.fn.stdpath("config") .. "/session/"),
+                options = { "buffers", "curdir", "tabpages", "winsize" },
+                pre_save = nil,
+            })
+        end,
+    },
+    {
+        "kevinhwang91/nvim-ufo",
+        lazy = false,
+        cmd = { "UfoDisable", "UfoEnable" },
+        dependencies = {
+            "kevinhwang91/promise-async",
+        },
+        config = function()
+            vim.o.foldcolumn = "1" -- '0' is not bad
+            vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+            vim.o.foldlevelstart = 99
+            vim.o.foldenable = true
 
--- -- you can set a custom on_attach function that will be used for all the language servers
--- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
--- lvim.lsp.on_attach_callback = function(client, bufnr)
---   local function buf_set_option(...)
---     vim.api.nvim_buf_set_option(bufnr, ...)
---   end
---   --Enable completion triggered by <c-x><c-o>
---   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
--- end
 
--- -- linters and formatters <https://www.lunarvim.org/docs/languages#lintingformatting>
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "stylua" },
---   {
---     command = "prettier",
---     extra_args = { "--print-width", "100" },
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
---   {
---     command = "shellcheck",
---     args = { "--severity", "warning" },
---   },
--- }
+            vim.cmd([[highlight AdCustomFold guifg=#bf8040]])
+            local handler = function(virtText, lnum, endLnum, width, truncate)
+                local newVirtText = {}
+                local suffix = ("  %d "):format(endLnum - lnum)
+                local sufWidth = vim.fn.strdisplaywidth(suffix)
+                local targetWidth = width - sufWidth
+                local curWidth = 0
 
--- -- Additional Plugins <https://www.lunarvim.org/docs/plugins#user-plugins>
--- lvim.plugins = {
---     {
---       "folke/trouble.nvim",
---       cmd = "TroubleToggle",
---     },
--- }
+                for _, chunk in ipairs(virtText) do
+                    local chunkText = chunk[1]
+                    local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                    if targetWidth > curWidth + chunkWidth then
+                        table.insert(newVirtText, chunk)
+                    else
+                        chunkText = truncate(chunkText, targetWidth - curWidth)
+                        local hlGroup = chunk[2]
+                        table.insert(newVirtText, { chunkText, hlGroup })
+                        chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                        -- str width returned from truncate() may less than 2nd argument, need padding
+                        if curWidth + chunkWidth < targetWidth then
+                            suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+                        end
+                        break
+                    end
+                    curWidth = curWidth + chunkWidth
+                end
 
--- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "zsh",
---   callback = function()
---     -- let treesitter use bash highlight for zsh files as well
---     require("nvim-treesitter.highlight").attach(0, "bash")
---   end,
--- })
+                -- Second line
+                local lines = vim.api.nvim_buf_get_lines(0, lnum, lnum + 1, false)
+                local secondLine = nil
+                if #lines == 1 then
+                    secondLine = lines[1]
+                elseif #lines > 1 then
+                    secondLine = lines[2]
+                end
+                if secondLine ~= nil then
+                    table.insert(newVirtText, { secondLine, "AdCustomFold" })
+                end
+
+                table.insert(newVirtText, { suffix, "MoreMsg" })
+
+                return newVirtText
+            end
+
+            require("ufo").setup({
+                provider_selector = function(bufnr, filetype, buftype)
+                    return { "treesitter", "indent" }
+                end,
+                fold_virt_text_handler = handler,
+            })
+        end,
+    },
+    {
+        "simrat39/symbols-outline.nvim",
+        lazy = true,
+        cmd = { "SymbolsOutline", "SymbolsOutlineOpen", "SymbolsOutlineClose" },
+        config = function()
+            local opts = {
+                highlight_hovered_item = true,
+                show_guides = true,
+                auto_preview = false,
+                position = "right",
+                relative_width = true,
+                width = 40,
+                auto_close = false,
+                show_numbers = false,
+                show_relative_numbers = false,
+                show_symbol_details = true,
+                preview_bg_highlight = "Pmenu",
+                autofold_depth = nil,
+                auto_unfold_hover = true,
+                fold_markers = { "", "" },
+                wrap = false,
+                keymaps = {
+                    -- These keymaps can be a string or a table for multiple keys
+                    close = { "<Esc>", "q" },
+                    goto_location = "<Cr>",
+                    focus_location = "o",
+                    hover_symbol = "<C-space>",
+                    toggle_preview = "K",
+                    rename_symbol = "r",
+                    code_actions = "a",
+                    fold = "h",
+                    unfold = "l",
+                    fold_all = "P",
+                    unfold_all = "U",
+                    fold_reset = "Q",
+                },
+                lsp_blacklist = {},
+                symbol_blacklist = {},
+                symbols = {
+                    File = { icon = "", hl = "@text.uri" },
+                    Module = { icon = "", hl = "@namespace" },
+                    Namespace = { icon = "", hl = "@namespace" },
+                    Package = { icon = "", hl = "@namespace" },
+                    Class = { icon = "𝓒", hl = "@type" },
+                    Method = { icon = "ƒ", hl = "@method" },
+                    Property = { icon = "", hl = "@method" },
+                    Field = { icon = "", hl = "@field" },
+                    Constructor = { icon = "", hl = "@constructor" },
+                    Enum = { icon = "", hl = "@type" },
+                    Interface = { icon = "ﰮ", hl = "@type" },
+                    Function = { icon = "", hl = "@function" },
+                    Variable = { icon = "", hl = "@constant" },
+                    Constant = { icon = "", hl = "@constant" },
+                    String = { icon = "𝓐", hl = "@string" },
+                    Number = { icon = "#", hl = "@number" },
+                    Boolean = { icon = "", hl = "@boolean" },
+                    Array = { icon = "", hl = "@constant" },
+                    Object = { icon = "", hl = "@type" },
+                    Key = { icon = "🔐", hl = "@type" },
+                    Null = { icon = "NULL", hl = "@type" },
+                    EnumMember = { icon = "", hl = "@field" },
+                    Struct = { icon = "𝓢", hl = "@type" },
+                    Event = { icon = "🗲", hl = "@type" },
+                    Operator = { icon = "+", hl = "@operator" },
+                    TypeParameter = { icon = "𝙏", hl = "@parameter" },
+                    Component = { icon = "󰡀", hl = "@function" },
+                    Fragment = { icon = "", hl = "@constant" },
+                },
+            }
+            require("symbols-outline").setup(opts)
+        end,
+    },
+}
+
+
+
+-- which-key from "folke/persistence.nvim"
+keymap["S"] = { name = "+Session" }
+keymap["Sa"] = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" }
+keymap["Sl"] = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" }
+keymap["SQ"] = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" }
+
+
+-- "kevinhwang91/nvim-ufo" keymap configure
+vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
+vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
+vim.keymap.set("n", "B", function()
+    local winid = require("ufo").peekFoldedLinesUnderCursor()
+    if not winid then
+        -- choose one of coc.nvim and nvim lsp
+        vim.lsp.buf.hover()
+    end
+end)
+
+
+-- which-key from "simrat39/symbols-outline.nvim"
+keymap["o"] = { name = "+Symbol outline" }
+keymap["oo"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
