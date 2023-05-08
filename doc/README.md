@@ -25,7 +25,7 @@ keymap | note
 leader+e | popup nvim-tree
 leader+f | find file 
 leader+; | jump to dashboard
-<C-4> or <C-\> | popup terminal windows
+`<C-4>` or `<C-\>` | popup terminal windows
 
 
 about lsp:
@@ -42,19 +42,19 @@ keymap | note
 ---|---
 leader+/ | comment line 
 gb | comment block
-<M-j> | move down current line
-<M-K> | move up current line
-<C-space> |  popup code lsp
+`<M-j>` | move down current line
+`<M-K>` | move up current line
+`<C-space>` |  popup code lsp
 
 
 about windows:
 keymap | note
 ---|---
-<C_w> | switch windows focus
-<C-h> | focus to left
-<C-l> | focus to right
-<C-j> | focus to down
-<C-k> | focus to up
+`<C-w>` | switch windows focus
+`<C-h>` | focus to left
+`<C-l>` | focus to right
+`<C-j>` | focus to down
+`<C-k>` | focus to up
 
 
 ## nerd font support
