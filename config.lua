@@ -20,6 +20,11 @@ lvim.format_on_save = {
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 lvim.leader = ","
 
+
+-- lunarvim colorscheme
+-- lvim.colorscheme = "lunar"
+lvim.colorscheme = "OceanicNext"
+
 -- add your own keymapping
 lvim.lsp.buffer_mappings.normal_mode["K"] = nil
 lvim.lsp.buffer_mappings.normal_mode["S"] = { vim.lsp.buf.hover, "Show documentation" }
@@ -34,7 +39,15 @@ lvim.keys.normal_mode["L"] = "$"
 lvim.keys.visual_mode["J"] = "5j"
 lvim.keys.visual_mode["K"] = "5k"
 
--- global varibale definition
+
+
+-- which-key.nvim plug configure
+-- delete and rename some whichkey describe
+local wk = require("which-key")
+wk.register({ gp = { name = "goto-preview" } })
+
+
+-- global keymap definition
 local keymap = lvim.builtin.which_key.mappings
 local vkeymap = lvim.builtin.which_key.vmappings
 
@@ -45,10 +58,11 @@ keymap["u"] = {
     c = { "<cmd>cd %:p:h<CR>:pwd<CR>", "change current file directory" }
 }
 
--- disable whichkey
+-- disable leader whichkey
 keymap["T"] = nil
 keymap["w"] = nil
 keymap["q"] = nil
+
 
 -- -- Change theme settings
 lvim.builtin.alpha.active = true
@@ -62,6 +76,17 @@ lvim.builtin.treesitter.auto_install = true
 
 -- --- disable automatic installation of servers
 -- lvim.lsp.installer.setup.automatic_installation = false
+
+-- lvim autocommand configure
+lvim.autocommands = {
+    -- {
+    --     "BufWinEnter",
+    --     {
+    --         pattern = { "*" },
+    --         command = "<cmd>lua require('persistence').load()<cr>",
+    --     }
+    -- }
+}
 
 
 -- lvim extension plugins configure
@@ -334,19 +359,116 @@ lvim.plugins = {
             require("symbols-outline").setup(opts)
         end,
     },
+    {
+        "LeonHeidelbach/trailblazer.nvim",
+        lazy = true,
+        keys = { "<A-s>", "<A-d>" },
+        config = function()
+            -- local HOME = os.getenv("HOME")
+            require("trailblazer").setup({
+                auto_save_trailblazer_state_on_exit = false,
+                auto_load_trailblazer_state_on_enter = false,
+                -- custom_session_storage_dir = HOME .. "/.local/share/trail_blazer_sessions/",
+                trail_options = {
+                    mark_symbol = "•",        --  will only be used if trail_mark_symbol_line_indicators_enabled = true
+                    newest_mark_symbol = "󰝥", -- disable this mark symbol by setting its value to ""
+                    cursor_mark_symbol = "󰺕", -- disable this mark symbol by setting its value to ""
+                    next_mark_symbol = "󰬦",  -- disable this mark symbol by setting its value to ""
+                    previous_mark_symbol = "󰬬", -- disable this mark symbol by setting its value to ""
+                },
+                mappings = {
+                    nv = {
+                        motions = {
+                            new_trail_mark = "<A-s>",
+                            track_back = "<A-d>",
+                            peek_move_next_down = "<A-J>",
+                            peek_move_previous_up = "<A-K>",
+                            move_to_nearest = "<A-n>",
+                            toggle_trail_mark_list = "<A-o>",
+                        },
+                        actions = {
+                            delete_all_trail_marks = "<A-L>",
+                            paste_at_last_trail_mark = "<A-p>",
+                            paste_at_all_trail_marks = "<A-P>",
+                            set_trail_mark_select_mode = "<A-t>",
+                            switch_to_next_trail_mark_stack = "<A-.>",
+                            switch_to_previous_trail_mark_stack = "<A-,>",
+                            set_trail_mark_stack_sort_mode = "<A-S>",
+                        },
+                    },
+                },
+                quickfix_mappings = { -- rename this to "force_quickfix_mappings" to completely override default mappings and not merge with them
+                    -- nv = {
+                    --  motions = {
+                    --   qf_motion_move_trail_mark_stack_cursor = "<CR>",
+                    --  },
+                    --  actions = {
+                    --   qf_action_delete_trail_mark_selection = "d",
+                    --   qf_action_save_visual_selection_start_line = "v",
+                    --  },
+                    --  alt_actions = {
+                    --   qf_action_save_visual_selection_start_line = "V",
+                    --  },
+                    -- },
+                    -- v = {
+                    --  actions = {
+                    --   qf_action_move_selected_trail_marks_down = "<C-j>",
+                    --   qf_action_move_selected_trail_marks_up = "<C-k>",
+                    --  },
+                    -- },
+                },
+            })
+        end,
+    },
+    -- note: exter lsp complete
+    { "lukas-reineke/cmp-under-comparator", lazy = true },
+    {
+        "f3fora/cmp-spell",
+        lazy = true,
+        config = function()
+            vim.opt.spell = true
+            vim.opt.spelllang:append "en_us"
+        end,
+    },
+    {
+        "ray-x/cmp-treesitter",
+        lazy = true,
+    },
+    {
+        "mhartington/oceanic-next",
+        priority = 1000,
+        lazy = lvim.colorscheme ~= "OceanicNext",
+    },
+    {
+        -- note: preview goto plug
+        "rmagatti/goto-preview",
+        lazy = false,
+        keys = { "gp" },
+        config = function()
+            require("goto-preview").setup({
+                width = 120,
+                height = 25,
+                default_mappings = true,
+                debug = false,
+                opacity = nil,
+                post_open_hook = nil,
+                -- You can use "default_mappings = true" setup option
+                -- Or explicitly set keybindings
+            })
+        end,
+    },
 }
 
 
 
--- which-key from "folke/persistence.nvim"
+-- which-key from "folke/persistence.nvim", file session
 keymap["S"] = { name = "+Session" }
 keymap["Sa"] = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" }
 keymap["Sl"] = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" }
 keymap["SQ"] = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" }
 
 
-
--- "kevinhwang91/nvim-ufo" keymap configure
+-- "kevinhwang91/nvim-ufo" keymap configure, fold code
 vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
 vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
 vim.keymap.set("n", "B", function()
@@ -358,6 +480,6 @@ vim.keymap.set("n", "B", function()
 end)
 
 
--- which-key from "simrat39/symbols-outline.nvim"
+-- which-key from "simrat39/symbols-outline.nvim", outline windows
 keymap["o"] = { name = "+Symbol outline" }
 keymap["oo"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
