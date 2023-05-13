@@ -274,12 +274,12 @@ lvim.plugins = {
                 position = "right",
                 relative_width = true,
                 width = 40,
-                auto_close = false,
+                auto_close = true,
                 show_numbers = false,
                 show_relative_numbers = false,
                 show_symbol_details = true,
                 preview_bg_highlight = "Pmenu",
-                autofold_depth = nil,
+                autofold_depth = 1,
                 auto_unfold_hover = true,
                 fold_markers = { "", "" },
                 wrap = false,
@@ -289,14 +289,14 @@ lvim.plugins = {
                     goto_location = "<Cr>",
                     focus_location = "o",
                     hover_symbol = "<C-space>",
-                    toggle_preview = "K",
+                    toggle_preview = "S",
                     rename_symbol = "r",
                     code_actions = "a",
                     fold = "h",
                     unfold = "l",
                     fold_all = "P",
                     unfold_all = "U",
-                    fold_reset = "Q",
+                    fold_reset = "R",
                 },
                 lsp_blacklist = {},
                 symbol_blacklist = {},
@@ -343,6 +343,7 @@ keymap["S"] = { name = "+Session" }
 keymap["Sa"] = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" }
 keymap["Sl"] = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" }
 keymap["SQ"] = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" }
+
 
 
 -- "kevinhwang91/nvim-ufo" keymap configure
