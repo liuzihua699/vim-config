@@ -22,8 +22,8 @@ lvim.leader = ","
 
 
 -- lunarvim colorscheme
--- lvim.colorscheme = "lunar"
-lvim.colorscheme = "OceanicNext"
+lvim.colorscheme = "lunar"
+-- lvim.colorscheme = "OceanicNext"
 
 -- add your own keymapping
 lvim.lsp.buffer_mappings.normal_mode["K"] = nil
@@ -71,8 +71,13 @@ lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
+
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
+
+
+-- disable nvim-tree.lua and enable neo-tree
+-- lvim.builtin.nvimtree.active = false
 
 -- --- disable automatic installation of servers
 -- lvim.lsp.installer.setup.automatic_installation = false
@@ -87,6 +92,37 @@ lvim.autocommands = {
     --     }
     -- }
 }
+
+
+
+-- nvim-tree disable explorer follow open file
+lvim.builtin.nvimtree.setup.update_focused_file = {
+    -- enable = false,
+    -- debounce_delay = 15,
+    -- update_root = false,
+    -- ignore_list = {},
+}
+
+
+
+-- nvim-tree solution based on QuitPre that checks if it's the last window
+-- see: https://github.com/nvim-tree/nvim-tree.lua/wiki/Auto-Close
+vim.api.nvim_create_autocmd({ "QuitPre" }, {
+    callback = function()
+        local invalid_win = {}
+        local wins = vim.api.nvim_list_wins()
+        for _, w in ipairs(wins) do
+            local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(w))
+            if bufname:match("NvimTree_") ~= nil then
+                table.insert(invalid_win, w)
+            end
+        end
+        if #invalid_win == #wins - 1 then
+            -- Should quit, so we close all invalid windows
+            for _, w in ipairs(invalid_win) do vim.api.nvim_win_close(w, true) end
+        end
+    end
+})
 
 
 -- lvim extension plugins configure
@@ -107,7 +143,7 @@ lvim.plugins = {
     {
         -- note: fixed method head
         "romgrk/nvim-treesitter-context",
-        lazy = true,
+        lazy = false,
         event = { "User FileOpened" },
         config = function()
             require("treesitter-context").setup({
