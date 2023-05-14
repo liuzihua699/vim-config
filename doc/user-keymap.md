@@ -18,6 +18,16 @@ leader+; | 打开dashboard页面
 leader+uc | 切换nvim-tree为当前文件所在目录
 
 
+git相关：
+keymap | note
+---|---
+,gd | 弹出git diff窗口
+,go | 弹出修改过的文件窗口
+,gb | 弹出分支窗口，按下`<CR>`切换到分支
+,gc | 弹出git log窗口，按下`<CR>`切换到commit。注意提前保存当前未提交代码
+,gC | 弹出git log窗口，但只显示当前文件的commit信息，使用`<CR>`切换到commit
+
+
 lsp相关：
 keymap | note
 ---|---
