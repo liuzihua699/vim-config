@@ -6,6 +6,7 @@
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.number = true
+vim.opt.wrap = true
 
 -- general
 lvim.log.level = "info"
@@ -258,6 +259,7 @@ lvim.plugins = {
         end,
     },
     {
+        -- note: flod conteng
         "kevinhwang91/nvim-ufo",
         lazy = false,
         cmd = { "UfoDisable", "UfoEnable" },
@@ -517,5 +519,5 @@ end)
 
 
 -- which-key from "simrat39/symbols-outline.nvim", outline windows
-keymap["o"] = { name = "+Symbol outline" }
-keymap["oo"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
+-- keymap["o"] = { name = "+Symbol outline" }
+keymap["o"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
