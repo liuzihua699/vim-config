@@ -71,10 +71,10 @@ zc | 当前行折叠，可折叠的内容左侧会有`-`标识 | nvim-ufo
 zo | 当前行展开，可展开的内容左侧会有`+`标识 | nvim-ufo
 B | 预览折叠的内容 | nvim-ufo
 ,o | 文件大纲预览，显示标题符号等 | symbols-outline.nvim
-<A-s> | 在当前行保存轨迹坐标| trailblazer.nvim
-<A-d> | 回到上一个轨迹，并删除坐标| trailblazer.nvim
-<A-o> | 使用quickfix窗口打开记录的轨迹坐标| trailblazer.nvim
-<A-L> | 删除所有的轨迹坐标| trailblazer.nvim
-<A-P> | 在所有的坐标处粘贴| trailblazer.nvim
+`<A-s>` | 在当前行保存轨迹坐标| trailblazer.nvim
+``<A-d>` | 回到上一个轨迹，并删除坐标| trailblazer.nvim
+``<A-o>` | 使用quickfix窗口打开记录的轨迹坐标| trailblazer.nvim
+``<A-L>` | 删除所有的轨迹坐标| trailblazer.nvim
+``<A-P>` | 在所有的坐标处粘贴| trailblazer.nvim
 gp | 使用goto-preview which-key | goto-preview
 
