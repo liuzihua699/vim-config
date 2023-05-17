@@ -32,13 +32,23 @@ lvim.lsp.buffer_mappings.normal_mode["S"] = { vim.lsp.buf.hover, "Show documenta
 
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["WQ"] = ":wq<cr>"
-lvim.keys.normal_mode["Q"] = ":q<cr>"
+lvim.keys.normal_mode["Q"] = "<cmd>BufferCloseOrQuit<CR>"
+
 lvim.keys.normal_mode["J"] = "5j"
 lvim.keys.normal_mode["K"] = "5k"
 lvim.keys.normal_mode["H"] = "0"
 lvim.keys.normal_mode["L"] = "$"
+
+lvim.keys.normal_mode["<A-h>"] = "<cmd>BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<A-left>"] = "<cmd>BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<A-l>"] = "<cmd>BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<A-right>"] = "<cmd>BufferLineCycleNext<CR>"
+
 lvim.keys.visual_mode["J"] = "5j"
 lvim.keys.visual_mode["K"] = "5k"
+
+
+
 
 
 
@@ -124,6 +134,28 @@ vim.api.nvim_create_autocmd({ "QuitPre" }, {
         end
     end
 })
+
+
+-- judge current windows buffer count and if current buffer not nvim-tree then close buffer
+vim.api.nvim_create_user_command("BufferCloseOrQuit", function()
+    local buffer_count = #vim.fn.filter(vim.fn.range(1, vim.fn.bufnr '$'), 'buflisted(v:val)')
+
+    -- only dashboard page
+    if buffer_count == 0 then
+        vim.cmd("quit")
+    end
+
+    -- if not nvim-tree buff and buffer_count>1 then close current buffer-window
+    if not require("nvim-tree.utils").is_nvim_tree_buf() and buffer_count > 1 then
+        vim.cmd("BufferKill")
+    else
+        vim.cmd("quit")
+    end
+
+    -- vim.cmd(string.format('echo "bufnum=%s, istree=%s"', buffer_count, require("nvim-tree.utils").is_nvim_tree_buf()))
+end, { desc = "close current window buffer, if has open mutil buffer then close current buffer." })
+
+
 
 
 -- lvim extension plugins configure
@@ -333,7 +365,7 @@ lvim.plugins = {
             local opts = {
                 highlight_hovered_item = true,
                 show_guides = true,
-                auto_preview = false,
+                auto_preview = true,
                 position = "right",
                 relative_width = true,
                 width = 40,

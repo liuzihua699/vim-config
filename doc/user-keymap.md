@@ -55,6 +55,9 @@ keymap | note
 `<C-l>` | 右边的窗口获取焦点
 `<C-j>` | 下面的窗口获取焦点
 `<C-k>` | 上面的窗口获取焦点
+Q | 关掉当前Buffer
+`<A-h>` `<A-Left>` | 左边的buffer获取焦点
+`<A-l>` `<A-Right>` | 右边的bufferl获取焦点
 
 
 Buffer相关：
