@@ -27,3 +27,16 @@ fc-cache -f -v .
 首先，你需要尽量多的使用`leader`键去唤起which-key，默认配置的`leader`键为`,`，使用`lvim`打开任意文件后，按下`,`等待1秒会弹出which-key的菜单。
 
 使用`,Lk`会显示当前文件下所有配置过的按键命令，`,sC`会显示当前文件下所有的nvim命令。当遇到记不住的内容时，可以多使用这2个命令获取相关帮助。
+
+## 文本反向搜索支持
+`telescope.nvim`中提供的live-group和grep_string功能支持根据文本内容搜索文件，但需要安装ripgrep，使用如下命令：
+
+`homebrew`
+```shell
+brew install ripgrep
+```
+
+`ubuntu`
+```shell
+sudo apt-get install ripgrep
+```

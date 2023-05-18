@@ -87,6 +87,7 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 lvim.builtin.treesitter.auto_install = true
 
 
+
 -- disable nvim-tree.lua and enable neo-tree
 -- lvim.builtin.nvimtree.active = false
 
