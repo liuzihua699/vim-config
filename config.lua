@@ -94,27 +94,14 @@ lvim.builtin.treesitter.auto_install = true
 -- --- disable automatic installation of servers
 -- lvim.lsp.installer.setup.automatic_installation = false
 
--- lvim autocommand configure
-lvim.autocommands = {
-    -- {
-    --     "BufWinEnter",
-    --     {
-    --         pattern = { "*" },
-    --         command = "<cmd>lua require('persistence').load()<cr>",
-    --     }
-    -- }
-}
-
-
 
 -- nvim-tree disable explorer follow open file
-lvim.builtin.nvimtree.setup.update_focused_file = {
-    -- enable = false,
-    -- debounce_delay = 15,
-    -- update_root = false,
-    -- ignore_list = {},
-}
-
+-- lvim.builtin.nvimtree.setup.update_focused_file = {
+-- enable = false,
+-- debounce_delay = 15,
+-- update_root = false,
+-- ignore_list = {},
+-- }
 
 
 -- nvim-tree solution based on QuitPre that checks if it's the last window
@@ -158,9 +145,21 @@ end, { desc = "close current window buffer, if has open mutil buffer then close 
 
 
 
+-- lvim extension themes configure
+local lvim_themes = {
+    {
+        "mhartington/oceanic-next",
+        priority = 1000,
+        -- lazy = lvim.colorscheme ~= "OceanicNext",
+    },
+    { "shaunsingh/nord.nvim" },
+    { "EdenEast/nightfox.nvim" },
+    { "ellisonleao/gruvbox.nvim" },
+    { "ray-x/aurora" },
+}
 
 -- lvim extension plugins configure
-lvim.plugins = {
+local lvim_plugins = {
     {
         -- note: cursor quick jump
         "ggandor/leap.nvim",
@@ -506,11 +505,6 @@ lvim.plugins = {
         lazy = true,
     },
     {
-        "mhartington/oceanic-next",
-        priority = 1000,
-        lazy = lvim.colorscheme ~= "OceanicNext",
-    },
-    {
         -- note: preview goto plug
         "rmagatti/goto-preview",
         lazy = false,
@@ -528,8 +522,22 @@ lvim.plugins = {
             })
         end,
     },
+    {
+        -- note: startuptime
+        "liuzihua699/startuptime.nvim",
+        -- lazy = true,
+        -- config = function()
+        --     require("startuptime").setup()
+        -- end
+    }
 }
 
+
+for k, v in pairs(lvim_themes) do
+    table.insert(lvim_plugins, v)
+end
+
+lvim.plugins = lvim_plugins
 
 
 -- which-key from "folke/persistence.nvim", file session
