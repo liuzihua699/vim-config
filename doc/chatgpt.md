@@ -19,10 +19,16 @@ keymap | note
 
 # 可能出现的问题
 1.  Cursor position outside buffer报错
+```
 删除 ~/.local/state/nvim/chatgpt
+```
 
 2. 按下<CR>或者<C-Enter>不会提交
+```
 改为<C-t>提交
+```
 
 3. 报错API ERROR
+```
 没有配置Api-key
+```
