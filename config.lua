@@ -548,6 +548,8 @@ local lvim_plugins = {
                     toggle_settings = "<C-o>",
                     toggle_message_role = "<C-r>",
                     toggle_system_role_open = "<C-s>",
+                    scroll_up = "<C-u>",
+                    scroll_down = "<C-d>",
                 },
                 popup_input = {
                     submit = "<C-g>",
@@ -599,3 +601,4 @@ keymap["o"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
 vkeymap["g"] = { name = "+ChatGPT" }
 vkeymap["ge"] = { "<cmd>lua require('chatgpt').edit_with_instructions()<cr>", "Edit with instructions" }
 keymap["G"] = { "<cmd>ChatGPT<cr>", "Open ChatGPT windows" }
+keymap["A"] = { "<cmd>ChatGPTActAs<cr>", "Open ChatGPTActAs windows" }
