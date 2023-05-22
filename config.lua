@@ -156,6 +156,7 @@ local lvim_themes = {
     { "EdenEast/nightfox.nvim" },
     { "ellisonleao/gruvbox.nvim" },
     { "ray-x/aurora" },
+    { "nxstynate/catppuccin.nvim" }
 }
 
 -- lvim extension plugins configure
@@ -525,10 +526,39 @@ local lvim_plugins = {
     {
         -- note: startuptime
         "liuzihua699/startuptime.nvim",
-        -- lazy = true,
         -- config = function()
         --     require("startuptime").setup()
         -- end
+    },
+    {
+        --note: chatgpt-3 powerful
+        "jackMort/ChatGPT.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("chatgpt").setup({
+                api_key_cmd = "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",
+                keymaps = {
+                    close = { "<Esc>", "<C-c>" },
+                    new_session = "<C-n>",
+                    cycle_windows = "<Tab>",
+                    cycle_modes = "<C-f>",
+                    select_session = "<Space>",
+                    rename_session = "r",
+                    delete_session = "d",
+                    toggle_settings = "<C-o>",
+                    toggle_message_role = "<C-r>",
+                    toggle_system_role_open = "<C-s>",
+                },
+                popup_input = {
+                    submit = "<C-t>"
+                }
+            })
+        end,
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim"
+        }
     }
 }
 
@@ -562,3 +592,10 @@ end)
 -- which-key from "simrat39/symbols-outline.nvim", outline windows
 -- keymap["o"] = { name = "+Symbol outline" }
 keymap["o"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
+
+
+
+-- which-key for ChatGPT.nvim
+vkeymap["g"] = { name = "+ChatGPT" }
+vkeymap["ge"] = { "<cmd>lua require('chatgpt').edit_with_instructions()<cr>", "Edit with instructions" }
+keymap["G"] = { "<cmd>ChatGPT<cr>", "Open ChatGPT windows" }

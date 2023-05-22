@@ -68,6 +68,20 @@ keymap | note
 `,bn` | 右边的buffer获取焦点
 `,bf` | 搜索打开的buffer
 
+ChatGPT相关：
+注意：关闭gpt窗口要使用`<C-c>`，否则会导致无法再次打开
+keymap | note
+---|---
+`,G` | 打开GPT窗口
+`<C-t>` | 提交当前的问题
+`<C-n>` | 打开一个新的session
+`<C-o>` | 打开setting窗口
+`<C-s>` | 打开系统窗口
+`<Tab>` | 切换窗口
+`<C-c>` | 关闭GPT窗口
+`<Space>` | 选中Session
+`r` | 给session重命名
+`d` | 删除行或者session
 
 # 用户插件keymap设置
 
