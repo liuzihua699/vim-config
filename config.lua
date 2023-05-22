@@ -536,9 +536,9 @@ local lvim_plugins = {
         event = "VeryLazy",
         config = function()
             require("chatgpt").setup({
-                api_key_cmd = "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",
+                api_key_cmd = "",
                 keymaps = {
-                    close = { "<Esc>", "<C-c>" },
+                    close = { "<Esc>" },
                     new_session = "<C-n>",
                     cycle_windows = "<Tab>",
                     cycle_modes = "<C-f>",
@@ -550,7 +550,7 @@ local lvim_plugins = {
                     toggle_system_role_open = "<C-s>",
                 },
                 popup_input = {
-                    submit = "<C-t>"
+                    submit = "<C-g>",
                 }
             })
         end,
