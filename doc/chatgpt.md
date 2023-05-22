@@ -1,5 +1,5 @@
 # chatgpt
-![chatgpt](chatgpt.img) 
+![chatgpt](chatgpt.jpg) 
 
 # keymap
 注意：关闭gpt窗口要使用`<C-c>`，否则会导致无法再次打开
