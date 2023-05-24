@@ -23,8 +23,8 @@ lvim.leader = ","
 
 
 -- lunarvim colorscheme
-lvim.colorscheme = "lunar"
--- lvim.colorscheme = "OceanicNext"
+-- lvim.colorscheme = "lunar"
+lvim.colorscheme = "OceanicNext"
 
 -- add your own keymapping
 lvim.lsp.buffer_mappings.normal_mode["K"] = nil
@@ -46,8 +46,6 @@ lvim.keys.normal_mode["<A-right>"] = "<cmd>BufferLineCycleNext<CR>"
 
 lvim.keys.visual_mode["J"] = "5j"
 lvim.keys.visual_mode["K"] = "5k"
-
-
 
 
 
@@ -86,6 +84,8 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
 
+-- add <Esc> to close lsp complete windowtest
+lvim.builtin.cmp.mapping["<Esc>"] = require("cmp.config.mapping").abort()
 
 
 -- disable nvim-tree.lua and enable neo-tree
