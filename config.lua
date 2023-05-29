@@ -90,6 +90,7 @@ lvim.builtin.cmp.mapping["<Esc>"] = require("cmp.config.mapping").abort()
 
 -- disable nvim-tree.lua and enable neo-tree
 -- lvim.builtin.nvimtree.active = false
+lvim.builtin.nvimtree.setup.ignore_buffer_on_setup = nil
 
 -- --- disable automatic installation of servers
 -- lvim.lsp.installer.setup.automatic_installation = false
