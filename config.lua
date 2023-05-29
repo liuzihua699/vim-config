@@ -8,6 +8,7 @@ vim.opt.tabstop = 4
 vim.opt.number = true
 vim.opt.wrap = true
 
+
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
@@ -24,53 +25,26 @@ lvim.leader = ","
 
 -- lunarvim colorscheme
 -- lvim.colorscheme = "lunar"
-lvim.colorscheme = "OceanicNext"
+-- lvim.colorscheme = "OceanicNext"
+lvim.colorscheme = "duskfox"
+
 
 -- add your own keymapping
 lvim.lsp.buffer_mappings.normal_mode["K"] = nil
 lvim.lsp.buffer_mappings.normal_mode["S"] = { vim.lsp.buf.hover, "Show documentation" }
-
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["WQ"] = ":wq<cr>"
 lvim.keys.normal_mode["Q"] = "<cmd>BufferCloseOrQuit<CR>"
-
 lvim.keys.normal_mode["J"] = "5j"
 lvim.keys.normal_mode["K"] = "5k"
 lvim.keys.normal_mode["H"] = "0"
 lvim.keys.normal_mode["L"] = "$"
-
 lvim.keys.normal_mode["<A-h>"] = "<cmd>BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<A-left>"] = "<cmd>BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<A-l>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<A-right>"] = "<cmd>BufferLineCycleNext<CR>"
-
 lvim.keys.visual_mode["J"] = "5j"
 lvim.keys.visual_mode["K"] = "5k"
-
-
-
-
--- which-key.nvim plug configure
--- delete and rename some whichkey describe
-local wk = require("which-key")
-wk.register({ gp = { name = "goto-preview" } })
-
-
--- global keymap definition
-local keymap = lvim.builtin.which_key.mappings
-local vkeymap = lvim.builtin.which_key.vmappings
-
-
--- -- Use which-key to add extra bindings with the leader-key prefix
-keymap["u"] = {
-    name = "+Use keymap",
-    c = { "<cmd>cd %:p:h<CR>:pwd<CR>", "change current file directory" }
-}
-
--- disable leader whichkey
-keymap["T"] = nil
-keymap["w"] = nil
-keymap["q"] = nil
 
 
 -- -- Change theme settings
@@ -84,25 +58,14 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
 
+
 -- add <Esc> to close lsp complete windowtest
 lvim.builtin.cmp.mapping["<Esc>"] = require("cmp.config.mapping").abort()
 
 
--- disable nvim-tree.lua and enable neo-tree
+-- nvim-tree configure
 -- lvim.builtin.nvimtree.active = false
 lvim.builtin.nvimtree.setup.ignore_buffer_on_setup = nil
-
--- --- disable automatic installation of servers
--- lvim.lsp.installer.setup.automatic_installation = false
-
-
--- nvim-tree disable explorer follow open file
--- lvim.builtin.nvimtree.setup.update_focused_file = {
--- enable = false,
--- debounce_delay = 15,
--- update_root = false,
--- ignore_list = {},
--- }
 
 
 -- nvim-tree solution based on QuitPre that checks if it's the last window
@@ -145,7 +108,6 @@ vim.api.nvim_create_user_command("BufferCloseOrQuit", function()
 end, { desc = "close current window buffer, if has open mutil buffer then close current buffer." })
 
 
-
 -- lvim extension themes configure
 local lvim_themes = {
     {
@@ -159,7 +121,6 @@ local lvim_themes = {
     { "ray-x/aurora" },
     { "nxstynate/catppuccin.nvim" }
 }
-
 -- lvim extension plugins configure
 local lvim_plugins = {
     {
@@ -562,23 +523,66 @@ local lvim_plugins = {
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope.nvim"
         }
-    }
+    },
+    {
+        -- lsp ui
+        "j-hui/fidget.nvim",
+        config = function()
+            require("fidget").setup()
+        end,
+    },
+    {
+        -- rust tools
+        "simrat39/rust-tools.nvim",
+        {
+            -- rust dependencies 
+            "saecki/crates.nvim",
+            version = "v0.3.0",
+            dependencies = { "nvim-lua/plenary.nvim" },
+            config = function()
+                require("crates").setup {
+                    null_ls = {
+                        enabled = true,
+                        name = "crates.nvim",
+                    },
+                    popup = {
+                        border = "rounded",
+                    },
+                }
+            end,
+        },
+    },
 }
-
-
-for k, v in pairs(lvim_themes) do
+for _, v in pairs(lvim_themes) do
     table.insert(lvim_plugins, v)
 end
-
 lvim.plugins = lvim_plugins
 
+
+-- global keymap definition
+local keymap = lvim.builtin.which_key.mappings
+local vkeymap = lvim.builtin.which_key.vmappings
+local wk = require("which-key")
+
+-- delete and rename some whichkey describe
+wk.register({ gp = { name = "goto-preview" } })
+
+-- -- Use which-key to add extra bindings with the leader-key prefix
+keymap["u"] = {
+    name = "+Use keymap",
+    c = { "<cmd>cd %:p:h<CR>:pwd<CR>", "change current file directory" }
+}
+
+-- disable leader whichkey
+keymap["T"] = nil
+keymap["w"] = nil
+keymap["q"] = nil
 
 -- which-key from "folke/persistence.nvim", file session
 keymap["S"] = { name = "+Session" }
 keymap["Sa"] = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" }
 keymap["Sl"] = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" }
 keymap["SQ"] = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" }
-
 
 -- "kevinhwang91/nvim-ufo" keymap configure, fold code
 vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
@@ -591,15 +595,146 @@ vim.keymap.set("n", "B", function()
     end
 end)
 
-
 -- which-key from "simrat39/symbols-outline.nvim", outline windows
 -- keymap["o"] = { name = "+Symbol outline" }
 keymap["o"] = { "<cmd>SymbolsOutline<cr>", "toggle symbols-outline windows" }
-
-
 
 -- which-key for ChatGPT.nvim
 vkeymap["g"] = { name = "+ChatGPT" }
 vkeymap["ge"] = { "<cmd>lua require('chatgpt').edit_with_instructions()<cr>", "Edit with instructions" }
 keymap["G"] = { "<cmd>ChatGPT<cr>", "Open ChatGPT windows" }
 keymap["A"] = { "<cmd>ChatGPTActAs<cr>", "Open ChatGPTActAs windows" }
+
+
+
+
+
+
+-- ==================================================================================================
+-- -- dap and lsp configure
+lvim.builtin.treesitter.ensure_installed = {
+    "lua",
+    "rust",
+    "toml",
+}
+
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "rust_analyzer" })
+
+
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+    { command = "stylua", filetypes = { "lua" } },
+}
+
+local mason_path = vim.fn.glob(vim.fn.stdpath "data" .. "/mason/")
+
+local codelldb_path = mason_path .. "bin/codelldb"
+local liblldb_path = mason_path .. "packages/codelldb/extension/lldb/lib/liblldb"
+local this_os = vim.loop.os_uname().sysname
+
+-- -- The path in windows is different
+if this_os:find "Windows" then
+    codelldb_path = mason_path .. "packages\\codelldb\\extension\\adapter\\codelldb.exe"
+    liblldb_path = mason_path .. "packages\\codelldb\\extension\\lldb\\bin\\liblldb.dll"
+else
+    -- The liblldb extension is .so for linux and .dylib for macOS
+    liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
+end
+
+pcall(function()
+    require("rust-tools").setup {
+        tools = {
+            executor = require("rust-tools/executors").termopen, -- can be quickfix or termopen
+            reload_workspace_from_cargo_toml = true,
+            runnables = {
+                use_telescope = true,
+            },
+            inlay_hints = {
+                auto = true,
+                only_current_line = false,
+                show_parameter_hints = false,
+                parameter_hints_prefix = "<-",
+                other_hints_prefix = "=>",
+                max_len_align = false,
+                max_len_align_padding = 1,
+                right_align = false,
+                right_align_padding = 7,
+                highlight = "Comment",
+            },
+            hover_actions = {
+                border = "rounded",
+            },
+            on_initialized = function()
+                vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter", "CursorHold", "InsertLeave" }, {
+                    pattern = { "*.rs" },
+                    callback = function()
+                        local _, _ = pcall(vim.lsp.codelens.refresh)
+                    end,
+                })
+            end,
+        },
+        dap = {
+            -- adapter= codelldb_adapter,
+            adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+        },
+        server = {
+            on_attach = function(client, bufnr)
+                require("lvim.lsp").common_on_attach(client, bufnr)
+                local rt = require "rust-tools"
+                -- vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
+                vim.keymap.set("n", "S", rt.hover_actions.hover_actions, { buffer = bufnr })
+            end,
+            capabilities = require("lvim.lsp").common_capabilities(),
+            settings = {
+                ["rust-analyzer"] = {
+                    lens = {
+                        enable = true,
+                    },
+                    checkOnSave = {
+                        enable = true,
+                        command = "clippy",
+                    },
+                },
+            },
+        },
+    }
+end)
+
+lvim.builtin.dap.on_config_done = function(dap)
+    dap.adapters.codelldb = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path)
+    dap.configurations.rust = {
+        {
+            name = "Launch file",
+            type = "codelldb",
+            request = "launch",
+            program = function()
+                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            end,
+            cwd = "${workspaceFolder}",
+            stopOnEntry = false,
+        },
+    }
+end
+
+vim.api.nvim_set_keymap("n", "<m-d>", "<cmd>RustOpenExternalDocs<Cr>", { noremap = true, silent = true })
+
+lvim.builtin.which_key.mappings["dr"] = {
+    name = "Rust",
+    r = { "<cmd>RustRunnables<Cr>", "Runnables" },
+    t = { "<cmd>lua _CARGO_TEST()<cr>", "Cargo Test" },
+    m = { "<cmd>RustExpandMacro<Cr>", "Expand Macro" },
+    c = { "<cmd>RustOpenCargo<Cr>", "Open Cargo" },
+    p = { "<cmd>RustParentModule<Cr>", "Parent Module" },
+    d = { "<cmd>RustDebuggables<Cr>", "Debuggables" },
+    v = { "<cmd>RustViewCrateGraph<Cr>", "View Crate Graph" },
+    R = {
+        "<cmd>lua require('rust-tools/workspace_refresh')._reload_workspace_from_cargo_toml()<Cr>",
+        "Reload Workspace",
+    },
+    o = { "<cmd>RustOpenExternalDocs<Cr>", "Open External Docs" },
+    y = { "<cmd>lua require'crates'.open_repository()<cr>", "[crates] open repository" },
+    P = { "<cmd>lua require'crates'.show_popup()<cr>", "[crates] show popup" },
+    i = { "<cmd>lua require'crates'.show_crate_popup()<cr>", "[crates] show info" },
+    f = { "<cmd>lua require'crates'.show_features_popup()<cr>", "[crates] show features" },
+    D = { "<cmd>lua require'crates'.show_dependencies_popup()<cr>", "[crates] show dependencies" },
+}
